@@ -1,0 +1,49 @@
+if(NOT EXISTS "@CMAKE_BINARY_DIR@/install_manifest.txt")
+    message(FATAL_ERROR "Cannot find install manifest: @CMAKE_BINARY_DIR@/install_manifest.txt")
+endif()
+
+#### Uninstall files
+file(READ "@CMAKE_BINARY_DIR@/install_manifest.txt" files)
+string(REGEX REPLACE "\n" ";" files "${files}")
+foreach(file ${files})
+    message(STATUS "Uninstalling $ENV{DESTDIR}${file}")
+    if(IS_SYMLINK "$ENV{DESTDIR}${file}" OR EXISTS "$ENV{DESTDIR}${file}")
+        execute_process(
+            COMMAND @CMAKE_COMMAND@ -E remove $ENV{DESTDIR}${file}
+            OUTPUT_VARIABLE rm_out
+            RESULT_VARIABLE rm_retval
+        )
+        if(NOT "${rm_retval}" STREQUAL 0)
+            message(FATAL_ERROR "Problem when removing $ENV{DESTDIR}${file}")
+        endif()
+        if (IS_SYMLINK "$ENV{DESTDIR}${file}" OR EXISTS "$ENV{DESTDIR}${file}")
+            message(FATAL_ERROR "$ENV{DESTDIR}${file} was not removed")
+        endif()
+    else()
+        message(STATUS "File $ENV{DESTDIR}${file} does not exist.")
+    endif()
+endforeach()
+
+#### Delete dirs
+list(APPEND dirs
+    @CMAKE_INSTALL_FULL_LIBDIR@/cmake/@PROJECT_NAME@
+    @CMAKE_INSTALL_FULL_BINDIR@/@PROJECT_NAME@
+    @CMAKE_INSTALL_FULL_INCLUDEDIR@/@PROJECT_NAME@
+)
+string(REGEX REPLACE "\n" ";" dirs "${dirs}")
+foreach(dir ${dirs})
+    if(IS_SYMLINK "${dir}" OR EXISTS "${dir}")
+        message(STATUS "Deleting dir ${dir}")
+        execute_process(
+            COMMAND @CMAKE_COMMAND@ -E remove_directory ${dir}
+            OUTPUT_VARIABLE rm_out
+            RESULT_VARIABLE rm_retval
+        )
+        if(NOT "${rm_retval}" STREQUAL 0)
+            message(FATAL_ERROR "Problem when removing ${dir}")
+        endif()
+        if (IS_SYMLINK "${dir}" OR EXISTS "${dir}")
+            message(FATAL_ERROR "${dir} was not removed")
+        endif()
+    endif()
+endforeach()

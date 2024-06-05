@@ -1,0 +1,11 @@
+prefix=@prefix@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: @PROJECT_NAME@
+Description: Cpp library with a lot of helper class and tools
+Version: @CMAKE_PROJECT_VERSION@
+Libs: -L${libdir} -l@PROJECT_NAME@
+Cflags: -I${includedir}
+Requires: @requires@

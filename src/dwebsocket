@@ -1,0 +1,5 @@
+#ifdef EMSCRIPTEN
+    #include <dwebsocket_em.h>
+#else
+    #include "dwebsocket_ix.h"
+#endif

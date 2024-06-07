@@ -7,6 +7,7 @@
 int main()
 {
     dws::DWebSocketClient client("ws://127.0.0.1:8888");
-    dws::DWebSocketServer server("0.0.0.0",8888);
-    server.run();
+
+    //dws::DWebSocketServer server("0.0.0.0",8888);
+    //server.run();
 }

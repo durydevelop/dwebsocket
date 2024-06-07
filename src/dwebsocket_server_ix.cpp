@@ -1,4 +1,7 @@
 #include "dwebsocket_server_ix.h"
+
+#ifndef EMSCRIPTEN
+
 #include <dwebsocket_log.h>
 
 #define TAG "Server"
@@ -208,3 +211,4 @@ namespace dws
         return endpoints.contains(connID);
     }
 }
+#endif

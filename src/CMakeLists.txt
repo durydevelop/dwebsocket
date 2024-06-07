@@ -87,4 +87,4 @@ if (${PROJECT_NAME}_INSTALL)
     )
 endif()
 
-message_c("Created target ${LIBRARY_TARGET_NAME} for export ${PROJECT_NAME}.")
+message_c("Created target ${PROJECT_NAME}::${LIBRARY_TARGET_NAME}")

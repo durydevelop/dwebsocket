@@ -32,9 +32,12 @@ if(DEFINED __ADD_UNINSTALL_TARGET_INCLUDED)
 endif()
 set(__ADD_UNINSTALL_TARGET_INCLUDED TRUE)
 
+# Get only the last one (added by this lib)
+list(GET CMAKE_MODULE_PATH -1 MODULE_PATH)
+set (IN_FILE ${MODULE_PATH}/uninstall.cmake.in)
 
 configure_file(
-        ${CMAKE_MODULE_PATH}/uninstall.cmake.in
+        ${IN_FILE}
         "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
         IMMEDIATE @ONLY)
 

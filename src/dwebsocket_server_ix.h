@@ -1,6 +1,8 @@
 #ifndef DWebSocketServer_IX_H
 #define DWebSocketServer_IX_H
 
+#ifndef EMSCRIPTEN
+
 #include <ixwebsocket/IXWebSocketServer.h>
 #include <dwebsocket_common.h>
 #include <dmpacket>
@@ -50,5 +52,7 @@ namespace dws
             void OnMessage(std::weak_ptr<ix::WebSocket> ixWebSocket, std::shared_ptr<ix::ConnectionState> connState, const ix::WebSocketMessagePtr &msg);
     };
 }
+
+#endif
 
 #endif

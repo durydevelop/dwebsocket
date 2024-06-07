@@ -1,12 +1,12 @@
 ##
 if (USE_EXTERNAL_DMPACKET)
     # Do not use internal IXWebSocket
-    message_c(${BOLD_MAGENTA} "${BOLD_WHITE}${PROJECT_NAME}${BOLD_MAGENTA} is finding <${BOLD_CYAN}ixwebsocket${BOLD_MAGENTA}>")
+    message_c(${BOLD_MAGENTA} "${BOLD_WHITE}${PROJECT_NAME}${BOLD_MAGENTA} is finding <${BOLD_CYAN}dmpacket${BOLD_MAGENTA}>")
     message(FATAL "Not Yet")
     # TODO
 else()
     # Use embedded one
-    message_c(${BOLD_MAGENTA} "${BOLD_WHITE}${PROJECT_NAME}${BOLD_MAGENTA} use <${BOLD_CYAN}ixwebsocket${BOLD_MAGENTA}> embedded")
+    message_c(${BOLD_MAGENTA} "${BOLD_WHITE}${PROJECT_NAME}${BOLD_MAGENTA} use <${BOLD_CYAN}dmpacket${BOLD_MAGENTA}> embedded")
     add_subdirectory(external/dmpacket)
 endif()
 

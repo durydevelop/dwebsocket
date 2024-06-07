@@ -68,6 +68,7 @@ target_include_directories(${LIBRARY_TARGET_NAME}
 
 target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC ixwebsocket::ixwebsocket)
 target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC dmpacket)
+target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC atomic)
 
 if (${PROJECT_NAME}_INSTALL)
     # Specify installation targets, typology and destination folders.

@@ -34,6 +34,7 @@ namespace dws
     bool DWebSocketClient::close(void) {
         if (webSocket->getReadyState() == DWebSocket::ReadyState::Open) {
             Log::debug(TAG,"Stopping socket...");
+            eventCallback(EVENT_CLOSING,webSocket->inputBuffer);
             webSocket->stop();
             Log::debug(TAG,"...stopped");
             // TODO: implement timeout
@@ -78,6 +79,7 @@ namespace dws
             return false;
         }
         Log::debug(TAG,"Try to connecting to %s",url.c_str());
+        eventCallback(EVENT_CONNECTING,webSocket->inputBuffer);
 
         if (webSocket->getReadyState() == DWebSocket::ReadyState::Open) {
             Log::debug(TAG,"Socket is open, closing...");

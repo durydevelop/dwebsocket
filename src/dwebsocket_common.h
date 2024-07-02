@@ -8,7 +8,7 @@
 
 namespace dws
 {
-    enum DWebSocketEventType { EVENT_OPEN, EVENT_CLOSE, EVENT_ERROR, EVENT_DATA_STR, EVENT_DATA_BIN, EVENT_PING, EVENT_PONG, EVENT_FRAGMENT};
+    enum DWebSocketEventType { EVENT_OPEN, EVENT_CLOSE, EVENT_ERROR, EVENT_DATA_STR, EVENT_DATA_BIN, EVENT_PING, EVENT_PONG, EVENT_FRAGMENT, EVENT_CONNECTING, EVENT_CLOSING};
     enum DWebSocketReadyState { STATE_CONNECTING, STATE_OPEN, STATE_CLOSING, STATE_CLOSED, STATE_TIMEOUT };
 
     //using DWebSocketHttpHeaders = std::map<std::string, std::string>; //, CaseInsensitiveLess>;

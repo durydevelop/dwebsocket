@@ -88,6 +88,8 @@ namespace dws
         eventCallback=callbackFunc;
     }
 
+    /// @brief Async
+    /// @return 
     bool DWebSocket::start() {
         if (url.empty()) {
             lastError="Cannot connect, url is not set";
@@ -258,10 +260,11 @@ namespace dws
             }
         }
         else if (msg->type == ix::WebSocketMessageType::Error) {
-            Log::debug(TAG,"ERROR");
             lastError=msg->errorInfo.reason;
+            Log::debug(TAG,"ERROR: %s",lastError.c_str());
             if (eventCallback) {
                 //eventCallback(DWebSocketEventType::EVENT_ERROR,(uint8_t*)msg->errorInfo.reason.data(),msg->errorInfo.reason.size());
+                inputBuffer.pushString(lastError);
                 eventCallback(DWebSocketEventType::EVENT_ERROR,inputBuffer);
             }
         }

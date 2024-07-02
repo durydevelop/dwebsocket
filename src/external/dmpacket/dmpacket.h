@@ -36,6 +36,7 @@ class DMPacket {
         int8_t readInt8(uint16_t offset);
         int16_t readInt16(uint16_t offset);
         float readFloat(uint16_t offset);
+        bool readBool(uint16_t offset);
         std::vector<uint8_t> readBytes(uint16_t offset, uint16_t count = 0);
         uint16_t readBytes(std::vector<uint8_t>& dest, uint16_t offset, uint16_t count = 0);
         std::vector<uint16_t> readWords(uint16_t offset, uint16_t count = 0);
@@ -47,6 +48,7 @@ class DMPacket {
         void writeDWord(uint32_t DWord, uint16_t offset);
         void writeInt16(int16_t Int, uint16_t offset);
         void writeFloat(float Float, uint16_t offset);
+        void writeBool(bool Bool, uint16_t offset);
         void writeString(std::string Str, uint16_t offset);
         void writeData(const std::vector<uint8_t>& buffVec, uint16_t offset);
         void writeData(const uint8_t buff[], const uint16_t buffSize, uint16_t offset);
@@ -56,6 +58,7 @@ class DMPacket {
         void pushDWord(uint32_t DWord);
         void pushInt16(int16_t Int);
         void pushFloat(float Float);
+        void pushBool(bool Bool);
         void pushString(std::string str);
         void pushData(const std::vector<uint8_t>& buffVec);
         void pushData(const uint8_t buff[], const uint16_t buffSize);
@@ -63,6 +66,7 @@ class DMPacket {
         uint8_t shiftByte(void);
         uint16_t shiftWord(void);
         uint32_t shiftDWord(void);
+        bool shiftBool(void);
         std::string shiftString(uint16_t lenght = 0);
 
         std::string toHexString(uint16_t offset = 0);

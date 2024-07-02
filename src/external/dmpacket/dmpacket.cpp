@@ -262,6 +262,17 @@ float DMPacket::readFloat(uint16_t offset)
 }
 
 /**
+ * @brief Read a boolean from data payload.
+ * @param Index ->  offset of byte to read in the payload.
+ * @return true if readed byte is non-zero otherwise false.
+ */
+bool DMPacket::readBool(uint16_t offset)
+{
+    uint8_t Byte=readByte(offset);
+    return Byte == 0 ? false : true;
+}
+
+/**
  * @brief 
  * 
  * @param offset 
@@ -524,6 +535,22 @@ void DMPacket::writeFloat(float Float, uint16_t offset)
 }
 
 /**
+ * @brief Write a boolean value as byte to a specific index to the packet.
+ * 
+ * @param Bool      ->  bool value.
+ * @param offset    ->  index offset in packetBuffer.
+ * 
+ * N.B. if offset is out of range, nothing will be done.
+ */
+void DMPacket::writeBool(bool Bool, uint16_t offset)
+{
+    if (offset >= packetBuff.size()) {
+        return;
+    }
+	packetBuff[offset]=Bool ? 0x01 : 0x00;
+}
+
+/**
  * @brief Write a string as a sequence of bytes into the packet.
  * 
  * @param str       ->  string to add.
@@ -669,6 +696,16 @@ void DMPacket::pushFloat(float Float)
 }
 
 /**
+ * @brief Add a boolean value as byte to the packet.
+ * 
+ * @param Bool  ->  bool value.
+ */
+void DMPacket::pushBool(bool Bool)
+{
+	packetBuff.emplace_back(Bool ? 0x01 : 0x00);
+}
+
+/**
  * @brief Add a string as a sequence of bytes to the packet.
  * 
  * @param str   ->  string to add.
@@ -792,6 +829,17 @@ uint32_t DMPacket::shiftDWord(void) {
     return 0;
 }
 
+/**
+ * @brief Pop a byte as boolean value from begin of the buffer.
+ * It does not really shift the buffer: it use a shift index to set the current pop posision.
+ * Really shifting a vector can be an expensive operation.
+ * 
+ * @return true if readed byte is non-zero otherwise false.
+ */
+bool DMPacket::shiftBool(void) {
+    uint8_t Byte=shiftByte();
+    return Byte == 0x00 ? false : true;
+}
 
 /**
  * @brief Pop a String from begin of the buffer.

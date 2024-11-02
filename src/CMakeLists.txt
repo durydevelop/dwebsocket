@@ -68,7 +68,11 @@ target_include_directories(${LIBRARY_TARGET_NAME}
 
 target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC ixwebsocket::ixwebsocket)
 target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC dmpacket)
-target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC atomic) # Needs on Raspbian 11 (bullseye)
+include(os_release_info)
+get_os_release_info(OS_ID OS_VERSION OS_CODENAME)
+if (OS_CODENAME MATCHES "bullsaye")
+	target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC atomic) # Needs on Raspbian 11 (bullseye)
+endif()
 
 if (${PROJECT_NAME}_INSTALL)
     # Specify installation targets, typology and destination folders.

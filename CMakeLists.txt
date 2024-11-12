@@ -14,9 +14,15 @@ if (${PLATFORM} MATCHES "Web" OR EMSCRIPTEN)
             message(FATAL_ERROR  "Emscripten non found, cannot compile on PLATFORM Web")
         endif()
     endif()
-
-    if (CMAKE_HOST_LINUX)
+	
+	#message(STATUS "CMAKE_HOST_LINUX=${CMAKE_HOST_LINUX}")
+    #if (CMAKE_HOST_LINUX)
+	
+	include(os_release_info)
+	get_os_release_info(OS_ID OS_VERSION OS_CODENAME)
+	if (OS_ID MATCHES "ubuntu")
         # EMSCRIPTEN seems not set PLATFORM_NAME pre-processor directive
+		message(STATUS "Setting PLATFORM_NAME=linux")
         add_compile_definitions(PLATFORM_NAME="linux") # ...for now emscripten build works only on linux
     endif()
 

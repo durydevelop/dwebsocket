@@ -33,6 +33,7 @@ find_package(IXWebSocket REQUIRED)
 set(${LIBRARY_TARGET_NAME}_INCLUDE_DIRS ${${LIBRARY_TARGET_NAME}_INCLUDE_DIRS} ${ixwebsocket_INCLUDE_DIRECTORIES})
 
 if (NOT TARGET dmpacket)
+    message_c("dmpacket not found, search it")
     find_package(DMPacket REQUIRED)
     set(${LIBRARY_TARGET_NAME}_INCLUDE_DIRS ${${LIBRARY_TARGET_NAME}_INCLUDE_DIRS} ${dmpacket_INCLUDE_DIRECTORIES})
 endif()
@@ -68,7 +69,9 @@ target_include_directories(${LIBRARY_TARGET_NAME}
 
 target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC ixwebsocket::ixwebsocket)
 target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC dmpacket)
-target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC atomic) # Needs on Raspbian 11 (bullseye)
+if (raspbian_bullsaye)
+    target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC atomic) # Needs on Raspbian 11 (bullseye)
+endif()
 
 if (${PROJECT_NAME}_INSTALL)
     # Specify installation targets, typology and destination folders.

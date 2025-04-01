@@ -1,6 +1,11 @@
 #include "dwebsocket_client.h"
 #include <dwebsocket_log>
 
+/**
+ * @todo Intercept call back and set STATE_CONNECTED ecc
+ * 
+ */
+
 namespace dws
 {
     const char TAG[7]="Client";

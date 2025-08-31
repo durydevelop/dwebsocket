@@ -34,6 +34,8 @@ namespace dws
 
         private:
             void OnMessage(const ix::WebSocketMessagePtr& msg);
+            void setError(const std::string& error) override;
+
             std::shared_ptr<ix::WebSocket> ixWebsocket;
     };
 }

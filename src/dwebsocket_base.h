@@ -42,6 +42,8 @@ namespace dws
 
         protected:
             OnWebSocketMessageCallback eventCallback;
+            virtual void setError(const std::string& error) = 0;
+            
             std::string url;
             std::string lastError;
     };

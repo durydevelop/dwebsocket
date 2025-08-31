@@ -26,6 +26,7 @@ namespace dws
             ~DWebSocketServer();
 
             void setOnEventCallback(OnServerEventCallback callbackEventFunc);
+            std::string getLastError(void);
 
             bool start(void);
             bool run(void);
@@ -43,13 +44,15 @@ namespace dws
             std::map<std::string,std::shared_ptr<dws::DEndPoint>> endpoints;
 
         private:
+            void OnMessage(std::weak_ptr<ix::WebSocket> ixWebSocket, std::shared_ptr<ix::ConnectionState> connState, const ix::WebSocketMessagePtr &msg);
+            void setError(const std::string& error);
+
             std::mutex epMutex;
             std::string host;
             size_t port;
             std::shared_ptr<ix::WebSocketServer> server;
             OnServerEventCallback eventCallback;
-
-            void OnMessage(std::weak_ptr<ix::WebSocket> ixWebSocket, std::shared_ptr<ix::ConnectionState> connState, const ix::WebSocketMessagePtr &msg);
+            std::string lastError;
     };
 }
 

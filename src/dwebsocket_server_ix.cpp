@@ -4,7 +4,7 @@
 
 #include <dwebsocket_log.h>
 
-#define TAG "Server"
+#define TAG "WSServer"
 
 namespace dws
 {
@@ -124,7 +124,7 @@ namespace dws
             }
             else if (msg->type == ix::WebSocketMessageType::Ping) {
                 if (endpoints.contains(connID)) {
-                    Log::debug(TAG,"Conn id: %s PING Msg: %s",connID.c_str(),msg->str.c_str());
+                    //Log::debug(TAG,"Conn id: %s PING Msg: %s",connID.c_str(),msg->str.c_str());
                     // Get end-point
                     auto endPoint=endpoints.at(connID);
                     endPoint->getInputBuffer().setBuffer(msg->str.data(),msg->str.size());
@@ -132,6 +132,18 @@ namespace dws
                 }
                 else {
                     Log::debug(TAG,"Client: %s tried to send PING but it is not in clients list",connID.c_str());
+                }
+            }
+            else if (msg->type == ix::WebSocketMessageType::Pong) {
+                if (endpoints.contains(connID)) {
+                    //Log::debug(TAG,"Conn id: %s PONG Msg: %s",connID.c_str(),msg->str.c_str());
+                    // Get end-point
+                    auto endPoint=endpoints.at(connID);
+                    endPoint->getInputBuffer().setBuffer(msg->str.data(),msg->str.size());
+                    eventCallback(EVENT_PING,endPoint);
+                }
+                else {
+                    Log::debug(TAG,"Client: %s tried to send PONG but it is not in clients list",connID.c_str());
                 }
             }
             else if (msg->type == ix::WebSocketMessageType::Fragment) {

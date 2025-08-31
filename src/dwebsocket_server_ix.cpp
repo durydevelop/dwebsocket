@@ -46,7 +46,7 @@ namespace dws
             Log::debug(TAG,"Started");
         }
         else {
-            Log::error(TAG,"Cannot start web-socket server");
+            setError("Cannot start web-socket server");
         }
         return ret;
     }
@@ -110,16 +110,16 @@ namespace dws
                 }
             }
             else if (msg->type == ix::WebSocketMessageType::Error) {
-                Log::debug(TAG,"ERROR");
+                //Log::debug(TAG,"ERROR");
                 if (endpoints.contains(connID)) {
-                    Log::debug(TAG,"Conn id: %s ERROR Msg:",connID.c_str(),msg->errorInfo.reason.c_str());
+                    setError("Conn id: " + connID + " ERROR Msg: " + msg->errorInfo.reason);
                     // Get end-point
                     auto endPoint=endpoints.at(connID);
                     endPoint->getInputBuffer().setBuffer(msg->errorInfo.reason.data(),msg->errorInfo.reason.size());
                     eventCallback(EVENT_ERROR,endPoint);
                 }
                 else {
-                    Log::debug(TAG,"Client %s sent error but it is not in clients list",connID.c_str());
+                    setError("Client " + connID + " sent error but it is not in clients list");
                 }
             }
             else if (msg->type == ix::WebSocketMessageType::Ping) {
@@ -209,6 +209,15 @@ namespace dws
 
     bool DWebSocketServer::hasClient(std::string connID) {
         return endpoints.contains(connID);
+    }
+
+    void DWebSocketServer::setError(const std::string& error) {
+        lastError = error;
+        Log::error(TAG, lastError.c_str());
+    }
+
+    std::string DWebSocketServer::getLastError(void) {
+        return lastError;
     }
 }
 #endif

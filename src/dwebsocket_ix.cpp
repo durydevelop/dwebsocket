@@ -92,8 +92,7 @@ namespace dws
     /// @return 
     bool DWebSocket::start() {
         if (url.empty()) {
-            lastError="Cannot connect, url is not set";
-            Log::error(TAG,lastError.c_str());
+            setError("Cannot connect, url is not set");
             return false;
         }
         Log::debug(TAG,"Starting websocket for %s",url.c_str());
@@ -139,12 +138,11 @@ namespace dws
      */
     bool DWebSocket::send(void) {
         if (!isConnected() ) {
-            lastError="Web socket is not opened";
-            Log::error(TAG,lastError.c_str());
+            setError("Web socket is not opened");
         }
         auto info=ixWebsocket->sendBinary(ix::IXWebSocketSendData(outputBuffer.buffer()));
         if (!info.success) {
-            lastError="Error sending output buffer";
+            setError("Error sending output buffer");
         }
         else {
             outputBuffer.clear();
@@ -161,24 +159,22 @@ namespace dws
      */
     bool DWebSocket::send(const std::string& data) {
         if (!isConnected() ) {
-            lastError="Web socket is not opened";
-            Log::error(TAG,lastError.c_str());
+            setError("Web socket is not opened");
         }
         auto info=ixWebsocket->send(data);
         if (!info.success) {
-            lastError="Error sending output buffer";
+            setError("Error sending output buffer");
         }
         return info.success;
     }
 
     bool DWebSocket::send(const std::vector<uint8_t>& data) {
         if (!isConnected() ) {
-            lastError="Web socket is not opened";
-            Log::error(TAG,lastError.c_str());
+            setError("Web socket is not opened");
         }
         auto info=ixWebsocket->sendBinary(ix::IXWebSocketSendData(data));
         if (!info.success) {
-            lastError="Error sending output buffer";
+            setError("Error sending output buffer");
         }
         return info.success;
     }
@@ -192,12 +188,11 @@ namespace dws
      */
     bool DWebSocket::send(const char *data, size_t len) {
         if (!isConnected() ) {
-            lastError="Web socket is not opened";
-            Log::error(TAG,lastError.c_str());
+            setError("Web socket is not opened");
         }
         auto info=ixWebsocket->sendBinary(ix::IXWebSocketSendData(data,len));
         if (!info.success) {
-            lastError="Error sending output buffer";
+            setError("Error sending output buffer");
         }
         return info.success;
     }
@@ -211,15 +206,19 @@ namespace dws
      */
     bool DWebSocket::send(const uint8_t *data, size_t len) {
         if (!isConnected() ) {
-            lastError="Web socket is not opened";
-            Log::error(TAG,lastError.c_str());
+            setError("Web socket is not opened");
         }
         auto d=std::vector<uint8_t>(&data[0],&data[len-1]);
         auto info=ixWebsocket->sendBinary(ix::IXWebSocketSendData(d));
         if (!info.success) {
-            lastError="Error sending output buffer";
+            setError("Error sending output buffer");
         }
         return info.success;
+    }
+
+    void DWebSocket::setError(const std::string& error) {
+        lastError = error;
+        Log::error(TAG, lastError.c_str());
     }
 
     std::string DWebSocket::getLastError(void) {
@@ -246,22 +245,22 @@ namespace dws
     void DWebSocket::OnMessage(const ix::WebSocketMessagePtr& msg) {
         inputBuffer.setBuffer((uint8_t *)msg->str.data(),msg->str.size());
         if (msg->type == ix::WebSocketMessageType::Open) {
-            Log::debug(TAG,"OPEN");
+            //Log::debug(TAG,"OPEN");
             if (eventCallback) {
                 //eventCallback(DWebSocketEventType::EVENT_OPEN,nullptr,0);
                 eventCallback(DWebSocketEventType::EVENT_OPEN,inputBuffer);
             }
         }
         else if (msg->type == ix::WebSocketMessageType::Close) {
-            Log::debug(TAG,"CLOSE");
+            //Log::debug(TAG,"CLOSE");
             if (eventCallback) {
                 //eventCallback(DWebSocketEventType::EVENT_CLOSE,(uint8_t*)msg->closeInfo.reason.data(),msg->closeInfo.reason.size());
                 eventCallback(DWebSocketEventType::EVENT_CLOSE,inputBuffer);
             }
         }
         else if (msg->type == ix::WebSocketMessageType::Error) {
-            lastError=msg->errorInfo.reason;
-            Log::debug(TAG,"ERROR: %s",lastError.c_str());
+            setError(msg->errorInfo.reason);
+            //Log::debug(TAG,"ERROR: %s",lastError.c_str());
             if (eventCallback) {
                 //eventCallback(DWebSocketEventType::EVENT_ERROR,(uint8_t*)msg->errorInfo.reason.data(),msg->errorInfo.reason.size());
                 inputBuffer.pushString(lastError);
@@ -269,7 +268,7 @@ namespace dws
             }
         }
         else if (msg->type == ix::WebSocketMessageType::Message) {
-            Log::debug(TAG,"MESSAGE");
+            //Log::debug(TAG,"MESSAGE");
             if (eventCallback) {
                 if (msg->binary) {
                     //eventCallback(DWebSocketEventType::EVENT_DATA_BIN,(uint8_t*)msg->str.data(),msg->str.size());    
@@ -283,3 +282,4 @@ namespace dws
         }
     }
 }
+

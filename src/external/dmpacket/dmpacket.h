@@ -9,6 +9,8 @@
         #include "wiring.h"
         #include "WProgram.h"
     #endif
+#else
+    #include <cstdint>
 #endif
 
 #include <vector>

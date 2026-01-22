@@ -58,6 +58,8 @@ namespace dws
             OnWebSocketMessageCallback eventCallback; // Hides eventCallback in base class so, can be used in external This pointer (see .cpp)
 
         private:
+            void setError(const std::string& error) override;
+            
             EmscriptenWebSocketCreateAttributes attr;
             EMSCRIPTEN_WEBSOCKET_T socket;
             EMSCRIPTEN_RESULT lastResult;

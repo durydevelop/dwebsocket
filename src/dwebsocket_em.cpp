@@ -268,6 +268,11 @@ namespace dws
         return true;
     }
 
+    void DWebSocket::setError(const std::string& error) {
+        lastError = error;
+        Log::error(TAG, lastError.c_str());
+    }
+
     std::string DWebSocket::getLastError(void) {
         return EMErrors[lastResult];
     }

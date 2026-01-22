@@ -32,7 +32,7 @@ namespace dws
             std::string getLastError(void);
 
             std::string getVersionInfo(void);
-
+            std::string getUrl(void);
             DMPacket& getInputBuffer(void);
             DMPacket& getOutputBuffer(void);
             std::weak_ptr<DWebSocket> getWebSocket(void);

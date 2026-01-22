@@ -190,4 +190,8 @@ namespace dws
     std::weak_ptr<DWebSocket> DWebSocketClient::getWebSocket(void) {
         return webSocket;
     }
+
+    std::string DWebSocketClient::getUrl(void) {
+        return url;
+    }
 }

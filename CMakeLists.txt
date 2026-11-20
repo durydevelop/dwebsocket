@@ -1,7 +1,16 @@
+#
+# Dipendenze:
+# - IXWebSocket: integrata per default; con USE_EXTERNAL_IXWEBSOCKET=ON viene
+#   cercata nel sistema o caricata da una cartella/repository configurabile.
+# - DMPacket: versione integrata. USE_EXTERNAL_DMPACKET=ON non è ancora supportato.
+# - ZLIB: compressione abilitata per default; con Emscripten usa il port dell'SDK.
+#
 #####################################################################################################################
 # This CMake project file is based on this guide https://github.com/robotology/how-to-export-cpp-library/tree/master #
 #####################################################################################################################
 cmake_minimum_required(VERSION 3.13)
+
+#set(PLATFORM Web CACHE STRING "Platform to build for")
 
 #### WASM support
 # CMAKE_TOOLCHAIN_FILE must be set before project() otherwise it does not take effect
@@ -14,34 +23,12 @@ if (${PLATFORM} MATCHES "Web" OR EMSCRIPTEN)
             message(FATAL_ERROR  "Emscripten non found, cannot compile on PLATFORM Web")
         endif()
     endif()
-	
-	#message(STATUS "CMAKE_HOST_LINUX=${CMAKE_HOST_LINUX}")
-    #if (CMAKE_HOST_LINUX)
-	
-	include(os_release_info)
-	get_os_release_info(OS_ID OS_VERSION OS_CODENAME)
-	if (OS_ID MATCHES "ubuntu")
-        # EMSCRIPTEN seems not set PLATFORM_NAME pre-processor directive
-		message(STATUS "Setting PLATFORM_NAME=linux")
-        add_compile_definitions(PLATFORM_NAME="linux") # ...for now emscripten build works only on linux
-    endif()
-
-	# Da provare ad attivare
-	set(USE_ZLIB OFF)
-    
-    # Flags for WebSocket
-    set(EMSDK_FLAGS "${EMSDK_FLAGS} -lwebsocket.js" CACHE STRING "" FORCE) # -s WARN_ON_UNDEFINED_SYMBOLS")
-
-    # Add compile flags
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EMSDK_FLAGS}" CACHE STRING "" FORCE)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EMSDK_FLAGS}" CACHE STRING "" FORCE)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${EMSDK_FLAGS}" CACHE STRING "" FORCE)
 endif()
 
 #### Create project
 project(dwebsocket
     LANGUAGES CXX C
-    VERSION 0.1.0.0
+    VERSION 1.0.0.0
 )
 
 #### Common libraries options
@@ -91,6 +78,31 @@ option(USE_EXTERNAL_DMPACKET "Do not use embedded version of DMPacket library" O
 # First:  Try to find it in system
 # Second: Load from default git repo (https://github.com/machinezone/IXWebSocket.git)
 option(USE_EXTERNAL_IXWEBSOCKET "Do not use embedded version of IXWebSocket library" OFF)
+option(USE_ZLIB "Use ZLIB compression" OFF)
+
+### OS Info
+include(os_release_info)
+get_os_release_info(OS_ID OS_VERSION OS_CODENAME)
+message_c(${BOLD_GREEN} "Building on Linux: ${BOLD_CYAN}${OS_ID} ${OS_VERSION} ${OS_CODENAME}${END_COLOR}")
+
+### EMSCRIPTEN compile options
+if(EMSCRIPTEN)
+	if (CMAKE_HOST_LINUX)
+        # On Linux, EMSCRIPTEN seems not set PLATFORM_NAME pre-processor directive
+        add_compile_definitions(PLATFORM_NAME="linux") # ...for now emscripten build works only on linux
+    endif()
+    
+    # Compile flags
+    if (USE_ZLIB)
+        set(EMSDK_FLAGS "${EMSDK_FLAGS} --use-port=zlib" CACHE STRING "" FORCE)
+    endif()
+    set(EMSDK_FLAGS "${EMSDK_FLAGS} -lwebsocket.js" CACHE STRING "" FORCE) # -s WARN_ON_UNDEFINED_SYMBOLS")
+
+    # Add compile flags
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EMSDK_FLAGS}" CACHE STRING "" FORCE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EMSDK_FLAGS}" CACHE STRING "" FORCE)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${EMSDK_FLAGS}" CACHE STRING "" FORCE)
+endif()
 
 #### Handle options (also set ${PROJECT_NAME}_<option> and <option>)
 # EMSCRIPTEN
@@ -219,10 +231,15 @@ message_c(${BOLD_CYAN} "BUILD_SHARED_LIBS:        ${${PROJECT_NAME}_BUILD_SHARED
 message_c(${BOLD_CYAN} "Build examples:           ${${PROJECT_NAME}_BUILD_EXAMPLES}")
 message_c(${BOLD_CYAN} "Build testing:            ${${PROJECT_NAME}_BUILD_TESTING}")
 message_c(${BOLD_CYAN} "USE_EXTERNAL_DMPACKET:    ${USE_EXTERNAL_DMPACKET}")
+message_c(${BOLD_CYAN} "USE_EXTERNAL_IXWEBSOCKET: ${USE_EXTERNAL_IXWEBSOCKET}")
+message_c(${BOLD_CYAN} "USE_ZLIB:                 ${USE_ZLIB}")
+if(PLATFORM)
+    message_c(${BOLD_CYAN} "PLATFORM:                 ${PLATFORM}")
+endif()
 if (EMSCRIPTEN)
-    message_c(${BOLD_CYAN} "WebSocket backend:        WASM (EMSCRIPTEN)")
+    message_c(${BOLD_CYAN} "WebSocket framework:        WASM (EMSCRIPTEN)")
     message_c(${BOLD_CYAN} "CMAKE_TOOLCHAIN_FILE:     ${CMAKE_TOOLCHAIN_FILE}")
 else()
-    message_c(${BOLD_CYAN} "WebSocket backend:        IXWebSocket")
+    message_c(${BOLD_CYAN} "WebSocket framework:        IXWebSocket")
     message_c(${BOLD_CYAN} "USE_EXTERNAL_IXWEBSOCKET: ${USE_EXTERNAL_IXWEBSOCKET}")
 endif()

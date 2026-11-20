@@ -1,1 +1,2 @@
 add_subdirectory(dwebsocket_server)
+add_subdirectory(dwebsocket_client)
